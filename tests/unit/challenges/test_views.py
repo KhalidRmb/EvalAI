@@ -49,6 +49,11 @@ class BaseAPITestClass(APITestCase):
             team_name='Test Challenge Host Team',
             created_by=self.user)
 
+        Participant.objects.create(
+            user=self.user,
+            status=Participant.ACCEPTED,
+            team=self.participant_team)
+
         self.challenge = Challenge.objects.create(
             title='Test Challenge',
             short_description='Short description for test challenge',
@@ -73,11 +78,6 @@ class BaseAPITestClass(APITestCase):
         self.participant_team = ParticipantTeam.objects.create(
             team_name='Participant Team for Challenge',
             created_by=self.user)
-
-        Participant.objects.create(
-            user=self.user,
-            status=Participant.SELF,
-            team=self.participant_team)
 
         self.client.force_authenticate(user=self.user)
 
