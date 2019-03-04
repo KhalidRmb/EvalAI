@@ -59,6 +59,7 @@ class BaseAPITestClass(APITestCase):
             published=False,
             enable_forum=True,
             anonymous_leaderboard=False,
+            participant_teams=self.participant_team,
             start_date=timezone.now() - timedelta(days=2),
             end_date=timezone.now() + timedelta(days=1),
             approved_by_admin=False,
@@ -74,6 +75,11 @@ class BaseAPITestClass(APITestCase):
             team_name='Participant Team for Challenge',
             created_by=self.user)
 
+        self.participant = Participant.objects.create(
+            user=self.user,
+            status=Participant.SELF,
+            team=self.participant_team)
+
         self.client.force_authenticate(user=self.user)
 
 
@@ -81,11 +87,6 @@ class GetParticipantTeamNameTest(BaseAPITestClass):
 
     def setUp(self):
         super(GetParticipantTeamNameTest, self).setUp()
-
-        self.participant = Participant.objects.create(
-            user=self.user,
-            team=self.participant_team,
-            status=Participant.ACCEPTED,)
 
     def test_team_name_for_challenge(self):
         self.url = reverse_lazy('challenges:get_team_name_for_challenge',
