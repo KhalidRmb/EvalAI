@@ -128,7 +128,7 @@ class GetParticipantTeamNameTest(APITestCase):
                                 kwargs={'challenge_pk': self.challenge.pk})
 
         expected = {"team_name": "Participant Team for Challenge"}
-        response = self.client.get(self.url, {})
+        response = self.client.get(self.url, {}, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, expected)
 
