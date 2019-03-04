@@ -102,7 +102,7 @@ class GetParticipantTeamNameTest(APITestCase):
             created_by=self.user)
 
         self.participant = Participant.objects.create(
-            user=self.user,
+            user=self.user,+
             status=Participant.SELF,
             team=self.participant_team)
 
@@ -119,7 +119,7 @@ class GetParticipantTeamNameTest(APITestCase):
             participant_teams=self.participant_team,
             start_date=timezone.now() - timedelta(days=2),
             end_date=timezone.now() + timedelta(days=1),
-            approved_by_admin=False,
+            approved_by_admin=True,
         )
 
         self.client.force_authenticate(user=self.user)
