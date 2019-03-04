@@ -85,14 +85,14 @@ class GetParticipantTeamNameTest(BaseAPITestClass):
         self.participant = Participant.objects.create(
             user=self.user,
             team=self.participant_team,
-            status=Participant.SELF,)
+            status=Participant.ACCEPTED,)
 
     def test_team_name_for_challenge(self):
         self.url = reverse_lazy('challenges:get_team_name_for_challenge',
                                 kwargs={'challenge_pk': self.challenge.pk})
 
         expected = {"team_name": "Participant Team for Challenge"}
-        response = self.client.get(self.url, {}, format='json')
+        response = self.client.get(self.url, {})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, expected)
 
