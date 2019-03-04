@@ -101,8 +101,8 @@ class GetParticipantTeamNameTest(APITestCase):
             team_name='Participant Team for Challenge',
             created_by=self.user)
 
-        self.participant = Participant.pbjects.create(
-            user=self.participant_user,
+        self.participant = Participant.objects.create(
+            user=self.user,
             status=Participant.SELF,
             team=self.participant_team)
 
@@ -116,7 +116,7 @@ class GetParticipantTeamNameTest(APITestCase):
             published=False,
             enable_forum=True,
             anonymous_leaderboard=False,
-            participant_teams = self.participant_team,
+            participant_teams=self.participant_team,
             start_date=timezone.now() - timedelta(days=2),
             end_date=timezone.now() + timedelta(days=1),
             approved_by_admin=False,
