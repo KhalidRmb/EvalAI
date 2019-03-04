@@ -102,7 +102,7 @@ class GetParticipantTeamNameTest(APITestCase):
             created_by=self.user)
 
         self.participant = Participant.objects.create(
-            user=self.user,+
+            user=self.user,
             status=Participant.SELF,
             team=self.participant_team)
 
