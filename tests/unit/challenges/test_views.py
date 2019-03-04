@@ -49,6 +49,11 @@ class BaseAPITestClass(APITestCase):
             team_name='Test Challenge Host Team',
             created_by=self.user)
 
+        self.participant = Participant.objects.create(
+            user=self.user,
+            status=Participant.ACCEPTED,
+            team=self.participant_team)
+
         self.challenge = Challenge.objects.create(
             title='Test Challenge',
             short_description='Short description for test challenge',
@@ -80,10 +85,6 @@ class BaseAPITestClass(APITestCase):
 class GetParticipantTeamNameTest(BaseAPITestClass):
 
     def setUp(self):
-        Participant.objects.create(
-            user=self.user,
-            status=Participant.ACCEPTED,
-            team=self.participant_team)
         super(GetParticipantTeamNameTest, self).setUp()
 
     def test_team_name_for_challenge(self):
