@@ -77,7 +77,7 @@ except NameError:
 
 
 @throttle_classes([UserRateThrottle])
-@api_view(['GET', ])
+@api_view(['GET'])
 @permission_classes((permissions.IsAuthenticated, HasVerifiedEmail))
 @authentication_classes((ExpiringTokenAuthentication,))
 def team_name_for_challenge(request, challenge_pk):
@@ -93,6 +93,7 @@ def team_name_for_challenge(request, challenge_pk):
         response_data = {"team_name": details["team_name"]}
 
         return Response(response_data, status=status.HTTP_200_OK)
+    return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
 @throttle_classes([UserRateThrottle])
