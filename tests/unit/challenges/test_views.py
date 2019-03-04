@@ -75,7 +75,7 @@ class BaseAPITestClass(APITestCase):
             team_name='Participant Team for Challenge',
             created_by=self.user)
 
-        self.participant = Participant.objects.create(
+        Participant.objects.create(
             user=self.user,
             status=Participant.SELF,
             team=self.participant_team)
