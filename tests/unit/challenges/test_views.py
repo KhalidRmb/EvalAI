@@ -78,14 +78,7 @@ class BaseAPITestClass(APITestCase):
 
 
 class GetParticipantTeamNameTest(BaseAPITestClass):
-#comment out the below and rever to how it was. I think the issue is that
-#we need to explicitly add the participant team to the challenge. Thgere's no way to link
-#a specific participant team to a challenge unless explicitly linked. Now how do I link?
 
-#How to access the ParticipantTeam from the model while adding? Do id start from 0?
-
-#Okay...this seems to be working. But for some godforsaken reason, something's up with jobs views tests.
-#Probably a database thing. Not cleaning up properly or something.
     def setUp(self):
         super(GetParticipantTeamNameTest, self).setUp()
 
