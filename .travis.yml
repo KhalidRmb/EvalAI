@@ -33,7 +33,6 @@ install:
 - pip install awscli==1.16.57 coveralls
 script:
 - flake8 ./
-- py.test ./tests/unit/challenges/test_views.py
 - py.test ./tests/unit/jobs/test_views.py
 
 after_success:
