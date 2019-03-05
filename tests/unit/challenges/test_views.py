@@ -78,7 +78,9 @@ class BaseAPITestClass(APITestCase):
 
 
 class GetParticipantTeamNameTest(APITestCase):
-
+#comment out the below and rever to how it was. I think the issue is that
+#we need to explicitly add the participant team to the challenge. Thgere's no way to link
+#a specific participant team to a challenge unless explicitly linked. Now how do I link?
     def setUp(self):
         self.client = APIClient(enforce_csrf_checks=True)
 
@@ -103,7 +105,7 @@ class GetParticipantTeamNameTest(APITestCase):
 
         self.participant = Participant.objects.create(
             user=self.user,
-            status=Participant.SELF,
+            status=Participant.ACCEPTED,
             team=self.participant_team)
 
         self.challenge = Challenge.objects.create(
@@ -121,6 +123,8 @@ class GetParticipantTeamNameTest(APITestCase):
             approved_by_admin=True,
         )
 
+        self.challenge.participant_teams.add(ParticipantTeam.objects.get(id=1))
+
         self.client.force_authenticate(user=self.user)
 
     def test_team_name_for_challenge(self):
@@ -128,7 +132,7 @@ class GetParticipantTeamNameTest(APITestCase):
                                 kwargs={'challenge_pk': self.challenge.pk})
 
         expected = {"team_name": "Participant Team for Challenge"}
-        response = self.client.get(self.url, {}, format='json')
+        response = self.client.get(self.url, {})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, expected)
 
