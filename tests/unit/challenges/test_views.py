@@ -81,6 +81,8 @@ class GetParticipantTeamNameTest(APITestCase):
 #comment out the below and rever to how it was. I think the issue is that
 #we need to explicitly add the participant team to the challenge. Thgere's no way to link
 #a specific participant team to a challenge unless explicitly linked. Now how do I link?
+
+#How to access the ParticipantTeam from the model while adding? Do id start from 0?
     def setUp(self):
         self.client = APIClient(enforce_csrf_checks=True)
 
@@ -123,7 +125,7 @@ class GetParticipantTeamNameTest(APITestCase):
             approved_by_admin=True,
         )
 
-        self.challenge.participant_teams.add(ParticipantTeam.objects.get(id=1))
+        self.challenge.participant_teams.add(ParticipantTeam.objects.get(team_name='Participant Team for Challenge'))
 
         self.client.force_authenticate(user=self.user)
 
