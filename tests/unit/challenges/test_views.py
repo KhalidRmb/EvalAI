@@ -77,57 +77,24 @@ class BaseAPITestClass(APITestCase):
         self.client.force_authenticate(user=self.user)
 
 
-class GetParticipantTeamNameTest(APITestCase):
+class GetParticipantTeamNameTest(BaseAPITestClass):
 #comment out the below and rever to how it was. I think the issue is that
 #we need to explicitly add the participant team to the challenge. Thgere's no way to link
 #a specific participant team to a challenge unless explicitly linked. Now how do I link?
 
 #How to access the ParticipantTeam from the model while adding? Do id start from 0?
+
+#Okay...this seems to be working. But for some godforsaken reason, something's up with jobs views tests.
+#Probably a database thing. Not cleaning up properly or something.
     def setUp(self):
-        self.client = APIClient(enforce_csrf_checks=True)
-
-        self.user = User.objects.create(
-            username='someuser',
-            email="user@test.com",
-            password='secret_password')
-
-        EmailAddress.objects.create(
-            user=self.user,
-            email='user@test.com',
-            primary=True,
-            verified=True)
-
-        self.challenge_host_team = ChallengeHostTeam.objects.create(
-            team_name='Test Challenge Host Team',
-            created_by=self.user)
-
-        self.participant_team = ParticipantTeam.objects.create(
-            team_name='Participant Team for Challenge',
-            created_by=self.user)
+        super(GetParticipantTeamNameTest, self).setUp()
 
         self.participant = Participant.objects.create(
             user=self.user,
             status=Participant.ACCEPTED,
             team=self.participant_team)
 
-        self.challenge = Challenge.objects.create(
-            title='Test Challenge',
-            short_description='Short description for test challenge',
-            description='Description for test challenge',
-            terms_and_conditions='Terms and conditions for test challenge',
-            submission_guidelines='Submission guidelines for test challenge',
-            creator=self.challenge_host_team,
-            published=True,
-            enable_forum=True,
-            anonymous_leaderboard=False,
-            start_date=timezone.now() - timedelta(days=2),
-            end_date=timezone.now() + timedelta(days=1),
-            approved_by_admin=True,
-        )
-
         self.challenge.participant_teams.add(ParticipantTeam.objects.get(team_name='Participant Team for Challenge'))
-
-        self.client.force_authenticate(user=self.user)
 
     def test_team_name_for_challenge(self):
         self.url = reverse_lazy('challenges:get_team_name_for_challenge',
