@@ -34,6 +34,8 @@ install:
 script:
 - flake8 ./
 - py.test ./tests/unit/challenges/test_views.py
+- py.test ./tests/unit/jobs/test_views.py
+
 after_success:
 - coveralls --rcfile=.coveragerc
 - ./scripts/deployment/push.sh
