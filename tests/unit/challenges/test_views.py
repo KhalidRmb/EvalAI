@@ -700,6 +700,7 @@ class DisableChallengeTest(BaseAPITestClass):
             status=ChallengeHost.ACCEPTED,
             permissions=ChallengeHost.ADMIN)
 
+        response = self.client.post(self.url, {})
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_disable_a_challenge_when_user_is_not_authenticated(self):
