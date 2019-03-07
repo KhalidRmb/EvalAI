@@ -51,7 +51,7 @@ from .models import (Challenge,
                      ChallengePhaseSplit,
                      ChallengeConfiguration,
                      StarChallenge)
-from .permissions import IsChallengeCreator
+from .permissions import IsChallengeCreator, IsMemberOfHostTeam
 from .serializers import (ChallengeConfigSerializer,
                           ChallengePhaseSerializer,
                           ChallengePhaseCreateSerializer,
@@ -115,7 +115,7 @@ def challenge_list(request, challenge_host_team_pk):
 
 @throttle_classes([UserRateThrottle])
 @api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
-@permission_classes((permissions.IsAuthenticated, HasVerifiedEmail, IsChallengeCreator))
+@permission_classes((permissions.IsAuthenticated, HasVerifiedEmail, IsMemberOfHostTeam))
 @authentication_classes((ExpiringTokenAuthentication,))
 def challenge_detail(request, challenge_host_team_pk, challenge_pk):
     try:
@@ -374,7 +374,7 @@ def get_challenges_based_on_teams(request):
 
 @throttle_classes([UserRateThrottle])
 @api_view(['GET', 'POST'])
-@permission_classes((permissions.IsAuthenticatedOrReadOnly, HasVerifiedEmail, IsChallengeCreator))
+@permission_classes((permissions.IsAuthenticatedOrReadOnly, HasVerifiedEmail, IsMemberOfHostTeam))
 @authentication_classes((ExpiringTokenAuthentication,))
 def challenge_phase_list(request, challenge_pk):
     try:
@@ -409,7 +409,7 @@ def challenge_phase_list(request, challenge_pk):
 
 @throttle_classes([UserRateThrottle])
 @api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
-@permission_classes((permissions.IsAuthenticatedOrReadOnly, HasVerifiedEmail, IsChallengeCreator))
+@permission_classes((permissions.IsAuthenticatedOrReadOnly, HasVerifiedEmail, IsMemberOfHostTeam))
 @authentication_classes((ExpiringTokenAuthentication,))
 def challenge_phase_detail(request, challenge_pk, pk):
     try:
