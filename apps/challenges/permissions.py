@@ -28,6 +28,7 @@ class IsChallengeCreator(permissions.BasePermission):
         else:
             return False
 
+
 class IsMemberOfHostTeam(permissions.BasePermission):
 
     message = "Sorry, you are not allowed to perform this operation!"

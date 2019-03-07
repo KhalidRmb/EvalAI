@@ -232,7 +232,7 @@ class GetParticularChallenge(BaseAPITestClass):
         self.assertEqual(response.data, expected)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_update_challenge_when_user_is_not_its_creator(self):
+    def test_update_challenge_when_user_is_not_host(self):
         self.user1 = User.objects.create(
             username='someuser1',
             email="user1@test.com",
@@ -252,7 +252,26 @@ class GetParticularChallenge(BaseAPITestClass):
         self.assertEqual(response.data, expected)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_update_challenge_when_user_is_its_creator(self):
+    def test_update_challenge_when_user_is_host(self):
+        self.user1 = User.objects.create(
+            username='someuser1',
+            email="user1@test.com",
+            password='secret_psassword')
+
+        EmailAddress.objects.create(
+            user=self.user1,
+            email='user1@test.com',
+            primary=True,
+            verified=True)
+
+        self.challenge_host = ChallengeHost.objects.create(
+            user=self.user1,
+            team_name=self.challenge_host_team,
+            status=ChallengeHost.ACCEPTED,
+            permissions=ChallengeHost.ADMIN)
+
+        self.client.force_authenticate(user=self.user1)
+
         new_title = 'Rose Challenge'
         new_description = 'New description.'
         expected = {
@@ -671,7 +690,7 @@ class DisableChallengeTest(BaseAPITestClass):
         self.assertEqual(list(response.data.values())[0], expected['error'])
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_disable_challenge_when_user_is_not_creator(self):
+    def test_disable_challenge_when_user_is_host(self):
         self.url = reverse_lazy('challenges:disable_challenge',
                                 kwargs={'challenge_pk': self.challenge2.pk})
         # Now allot self.user as also a host of self.challenge_host_team1
@@ -681,12 +700,7 @@ class DisableChallengeTest(BaseAPITestClass):
             status=ChallengeHost.ACCEPTED,
             permissions=ChallengeHost.ADMIN)
 
-        expected = {
-            'error': 'Sorry, you are not allowed to perform this operation!'
-        }
-        response = self.client.post(self.url, {})
-        self.assertEqual(list(response.data.values())[0], expected['error'])
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_disable_a_challenge_when_user_is_not_authenticated(self):
         self.client.force_authenticate(user=None)
@@ -1802,7 +1816,7 @@ class GetParticularChallengePhase(BaseChallengePhaseClass):
         self.assertEqual(response.data, expected)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_update_challenge_phase_when_user_is_not_its_creator(self):
+    def test_update_challenge_phase_when_user_is_not_its_host(self):
         self.user1 = User.objects.create(
             username='someuser1',
             email="user1@test.com",
@@ -1822,7 +1836,26 @@ class GetParticularChallengePhase(BaseChallengePhaseClass):
         self.assertEqual(response.data, expected)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_update_challenge_phase_when_user_is_its_creator(self):
+    def test_update_challenge_phase_when_user_is_its_host(self):
+        self.user1 = User.objects.create(
+            username='someuser1',
+            email="user1@test.com",
+            password='secret_psassword')
+
+        EmailAddress.objects.create(
+            user=self.user1,
+            email='user1@test.com',
+            primary=True,
+            verified=True)
+
+        self.challenge_host = ChallengeHost.objects.create(
+            user=self.user1,
+            team_name=self.challenge_host_team,
+            status=ChallengeHost.ACCEPTED,
+            permissions=ChallengeHost.ADMIN)
+
+        self.client.force_authenticate(user=self.user1)
+
         new_name = 'Rose Phase'
         new_description = 'New description.'
         expected = {
