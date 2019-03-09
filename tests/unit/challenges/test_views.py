@@ -690,7 +690,7 @@ class DisableChallengeTest(BaseAPITestClass):
         self.assertEqual(list(response.data.values())[0], expected['error'])
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_disable_challenge_when_user_is_host(self):
+    def test_disable_challenge_when_user_is_not_creator(self):
         self.url = reverse_lazy('challenges:disable_challenge',
                                 kwargs={'challenge_pk': self.challenge2.pk})
         # Now allot self.user as also a host of self.challenge_host_team1
@@ -700,8 +700,12 @@ class DisableChallengeTest(BaseAPITestClass):
             status=ChallengeHost.ACCEPTED,
             permissions=ChallengeHost.ADMIN)
 
+        expected = {
+            'error': 'Sorry, you are not allowed to perform this operation!'
+        }
         response = self.client.post(self.url, {})
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(list(response.data.values())[0], expected['error'])
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_disable_a_challenge_when_user_is_not_authenticated(self):
         self.client.force_authenticate(user=None)
