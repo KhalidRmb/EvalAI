@@ -51,7 +51,7 @@ from .models import (Challenge,
                      ChallengePhaseSplit,
                      ChallengeConfiguration,
                      StarChallenge)
-from .permissions import IsChallengeCreator
+from .permissions import IsChallengeCreator, IsMemberOfHostTeam
 from .serializers import (ChallengeConfigSerializer,
                           ChallengePhaseSerializer,
                           ChallengePhaseCreateSerializer,
