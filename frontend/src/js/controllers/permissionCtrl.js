@@ -30,7 +30,7 @@
                 },
                 onError: function(response) {
                     var details = response.data
-                    if(response.status==429){$rootScope.notify("error", details.detail);}
+                    if(response.status==429){$rootScope.notify("error", details.message);}
                     else{$rootScope.notify("error", "Something went wrong. Please try again.");}
                     }
             };

@@ -171,8 +171,9 @@ REST_FRAMEWORK = {
     },
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
-    )
-}
+    ),
+    'EXCEPTION_HANDLER': 'apps.base.utils.custom_exception_handler'
+    }
 
 # ALLAUTH SETTINGS
 ACCOUNT_EMAIL_REQUIRED = True

@@ -4,13 +4,15 @@ from django.core.cache import caches
 
 from django.conf import settings
 
+
 class ResendEmailThrottle(SimpleRateThrottle):
     """
     Used to limit the requests to /accounts/user/resend-email
     to 3/hour.
     """
-    if(settings.DEBUG==True):
-        cache = caches['throttling'] #Should I change this depeneding on dev or prod environment?
+    if settings.DEBUG is True:
+        cache = caches['throttling']
+
     scope = 'resend_email'
     def get_cache_key(self, request, view):
         if request.user.is_authenticated:
