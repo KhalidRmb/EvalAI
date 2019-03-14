@@ -82,7 +82,7 @@ def custom_exception_handler(exc, context):
     if isinstance(exc, Throttled):
         time = exc.wait/60
         custom_response_data = {
-            'message': 'Request limit exceeded. Please wait for %d minutes.'%time
+            'message': 'Request limit exceeded. Please wait for %d minutes.' % time
         }
         response.data = custom_response_data
 
