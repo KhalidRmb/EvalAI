@@ -10,7 +10,7 @@ class ResendEmailThrottle(SimpleRateThrottle):
     Used to limit the requests to /accounts/user/resend-email
     to 3/hour.
     """
-    if settings.DEBUG is True:
+    if (settings.DEBUG is True) or (settings.TEST is True):
         cache = caches['throttling']
 
     scope = 'resend_email'
