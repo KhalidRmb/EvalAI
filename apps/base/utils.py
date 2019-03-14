@@ -7,7 +7,8 @@ from django.utils.deconstruct import deconstructible
 
 from rest_framework.exceptions import NotFound
 from rest_framework.pagination import PageNumberPagination
-
+from rest_framework.views import exception_handler
+from rest_framework.exceptions import Throttled
 
 class StandardResultSetPagination(PageNumberPagination):
     page_size = 100
@@ -69,3 +70,14 @@ def decode_data(data):
     for i in data:
         decoded.append(base64.decodestring(i+"=="))
     return decoded
+
+def custom_exception_handler(exc, context):
+    response = exception_handler(exc, context)
+
+    if isinstance(exc, Throttled): # check that a Throttled exception is raised
+        custom_response_data = { # prepare custom response data
+            'message': 'request limit exceeded, availableIn: %d seconds'%exc.wait
+        }
+        response.data = custom_response_data # set the custom response data on response object
+
+    return response
