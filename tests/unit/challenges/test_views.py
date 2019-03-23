@@ -2297,7 +2297,7 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.assertEqual(ChallengePhaseSplit.objects.count(), 2)
 
     def test_create_challenge_using_zip_file_when_not_a_zip_file(self):
-        samplefile = open(path_to_sample_file, w+)
+        samplefile = open(path_to_sample_file, 'w+')
         sample_file = SimpleUploadedFile(path_to_sample_file + '.txt', samplefile.read(), content_type='text/plain')
         expected = {
         'error': ('The zip file contents cannot be extracted. '
@@ -2313,12 +2313,12 @@ class CreateChallengeUsingZipFile(APITestCase):
         func(*args, **kwargs)
         try:
             del eval(self.element_to_delete)
-            with open(self.path_to_altered_yaml, w+) as a:
+            with open(self.path_to_altered_yaml, 'w+') as a:
                 yaml.dump(self.copy_dict, a, default_flow_style=False)
         except KeyError: #To catch the case when no element is to be deleted- i.e, empty string is passed as key.
             pass
 
-        challengezip = zipfile.ZipFile(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), w, zipfile.ZIP_DEFLATED)
+        challengezip = zipfile.ZipFile(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'w', zipfile.ZIP_DEFLATED)
         for root, dirs, files in os.walk(self.path_to_annotation):
             for file in files:
                 challengezip.write(os.path.join(root, file), join('annotation',file))
@@ -2465,7 +2465,7 @@ class CreateChallengeUsingZipFile(APITestCase):
 
         shutil.rmtree(BASE_TEMP_LOCATION)
 
-    #oncePRisMerged.
+    #Once PR is Merged:
     #def test_create_challenge_using_zip_file_when_some_serializer_error(self):
 
     #def test_create_challlenge_using_zip_file_when_challenge_is_docker_based(self): #????DO THIS OR NOT?
