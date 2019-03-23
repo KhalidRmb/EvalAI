@@ -2231,7 +2231,6 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.copy_dict = copy.deepcopy(yaml_dict)
 
     def test_create_challenge_using_zip_file_when_zip_file_is_not_uploaded(self):
-
         expected = {
             'zip_configuration': ['No file was submitted.']
         }
@@ -2240,7 +2239,6 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_challenge_using_zip_file_when_zip_file_is_not_uploaded_successfully(self):
-
         expected = {
             'zip_configuration': ['The submitted data was not a file. Check the encoding type on the form.']
         }
@@ -2249,7 +2247,6 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_challenge_using_zip_file_when_server_error_occurs(self):
-
         expected = {
             'error': 'A server error occured while processing zip file. Please try again!'
             }
@@ -2268,7 +2265,6 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_create_challenge_using_zip_file_when_user_is_not_authenticated(self):
-
         self.client.force_authenticate(user=None)
 
         expected = {
@@ -2280,13 +2276,12 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_create_challenge_using_zip_file_success(self):
-
         self.assertEqual(Challenge.objects.count(), 1)
         self.assertEqual(DatasetSplit.objects.count(), 1)
         self.assertEqual(Leaderboard.objects.count(), 1)
         self.assertEqual(ChallengePhaseSplit.objects.count(), 1)
 
-       with mock.patch('challenges.views.requests.get') as m:
+        with mock.patch('challenges.views.requests.get') as m:
             resp = mock.Mock()
             resp.content = self.test_zip_file.read()
             resp.status_code = 200
@@ -2301,13 +2296,25 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.assertEqual(Leaderboard.objects.count(), 2)
         self.assertEqual(ChallengePhaseSplit.objects.count(), 2)
 
+    def test_create_challenge_using_zip_file_when_not_a_zip_file(self):
+        samplefile = open(path_to_sample_file, w+)
+        sample_file = SimpleUploadedFile(path_to_sample_file + '.txt', samplefile.read(), content_type='text/plain')
+        expected = {
+        'error': ('The zip file contents cannot be extracted. '
+                        'Please check the format!')
+        }
+        response = self.client.post(self.url, {'zip_configuration': sample_file}, format='multipart')
+        self.assertEqual(response.data, expected)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        samplefile.close()
+
     #Decorator function for tests below.
     def create_challenge_test(func):
         func(*args, **kwargs)
         try:
-            del self.copy_dict[self.element_to_delete]
+            del eval(self.element_to_delete)
             with open(self.path_to_altered_yaml, w+) as a:
-                yaml.dump(self.copy_dict, self.altered_yaml_file, default_flow_style=False)
+                yaml.dump(self.copy_dict, a, default_flow_style=False)
         except KeyError:
             pass
 
@@ -2317,7 +2324,7 @@ class CreateChallengeUsingZipFile(APITestCase):
                 challengezip.write(os.path.join(root, file), join('annotation',file))
         for f in self.filenames:
             chalengezip.write(f)
-        challenge_zip_file = SimpleUploadedFile(self.challengezip, self.challengezip.read(), content_type='application/zip')
+        challenge_zip_file = SimpleUploadedFile(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), self.challengezip.read(), content_type='application/zip')
 
         expected = {
         'error': self.message
@@ -2325,16 +2332,6 @@ class CreateChallengeUsingZipFile(APITestCase):
         response = self.client.post(self.url, {'zip_configuration': challenge_zip_file}, format='multipart')
         self.assertEqual(response.data, expected)
         self.assertEqual(response.status_code, self.status_code)
-
-    @create_challenge_test
-    def test_create_challenge_using_zip_file_when_not_a_zip_file(self): #EDIT??
-        self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip, self.path_to_sample_file]
-        self.message = ('The zip file contents cannot be extracted. '
-                        'Please check the format!')
-        self.element_to_delete = ''
-        self.status_code = status.HTTP_400_BAD_REQUEST
-
-        samplefile = open(join(BASE_TEMP_LOCATION, 'sample.txt'), w+)
 
     @create_challenge_test
     def test_create_challenge_using_zip_file_when_no_yaml_file_present(self):
@@ -2367,6 +2364,7 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
 
     #def test_create_challenge_using_zip_file_when_yaml_syntax_error(self):
+    #create a new yaml file? Or how do I alter the dictionary?
 
     @create_challenge_test
     def test_create_challenge_using_zip_file_when_no_challenge_phases_key(self):
