@@ -2312,7 +2312,7 @@ class CreateChallengeUsingZipFile(APITestCase):
     def create_challenge_test(func):
         func(*args, **kwargs)
         try:
-            del exec(self.element_to_delete)
+            exec(self.element_to_delete)
             with open(self.path_to_altered_yaml, 'w+') as a:
                 yaml.dump(self.copy_dict, a, default_flow_style=False)
         except KeyError: #To catch the case when no element is to be deleted- i.e, empty string is passed as key.
