@@ -2690,7 +2690,7 @@ class CreateChallengeUsingZipFile(APITestCase):
     def test_create_challenge_using_zip_file_when_no_yaml_file_present(self):
         self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
         self.message = 'There is no YAML file in zip file you uploaded!'
-        self.element_to_delete = ""
+        self.element_to_delete = "del self.copy_dict['']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
         self.create_challenge_test()
 
@@ -2698,7 +2698,7 @@ class CreateChallengeUsingZipFile(APITestCase):
     def test_create_challenge_using_zip_file_when_two_yaml_files_present(self):
         self.filenames = [self.path_to_original_yaml_file, self.path_to_altered_yaml, self.path_to_eval_script_zip]
         self.message = 'There are 2 YAML files instead of one in zip folder!'
-        self.element_to_delete = ""
+        self.element_to_delete = "del self.copy_dict['']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
         self.create_challenge_test()
 
@@ -2716,7 +2716,7 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.filenames = [self.path_to_altered_yaml]
         self.message = ('No evaluation script is present in the zip file. '
                         'Please add it and then try again!')
-        self.element_to_delete = ""
+        self.element_to_delete = "del self.copy_dict['']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
         self.create_challenge_test()
 
@@ -2822,7 +2822,7 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.message = ('No test annotation file found in zip file'
                         'for challenge phase \'{}\'. Please add it and '
                         ' then try again!'.format(yaml_dict[challenge_phases][1][name]))
-        self.element_to_delete = ''
+        self.element_to_delete = "del self.copy_dict['']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
 
         shutil.rmtree(BASE_TEMP_LOCATION)
