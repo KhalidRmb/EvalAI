@@ -2522,15 +2522,15 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.BASE_TEMP_LOCATION = tempfile.mkdtemp()
         self.base_path = join(settings.BASE_DIR, 'tests', 'unit', 'challenges', 'data')
 
-        self.path_to_annotation = join(base_path, 'annotations')
-        self.path_to_original_yaml_file = join(base_path, 'challenge_config.yaml')
-        self.path_to_altered_yaml = join(BASE_TEMP_LOCATION, "altered_yaml_file.yaml")
-        self.path_to_sample_file = join(BASE_TEMP_LOCATION, 'sample.txt')
-        self.path_to_eval_script_zip = join(base_path, 'evaluation_script.zip')
+        self.path_to_annotation = join(self.base_path, 'annotations')
+        self.path_to_original_yaml_file = join(self.base_path, 'challenge_config.yaml')
+        self.path_to_altered_yaml = join(self.BASE_TEMP_LOCATION, "altered_yaml_file.yaml")
+        self.path_to_sample_file = join(self.BASE_TEMP_LOCATION, 'sample.txt')
+        self.path_to_eval_script_zip = join(self.base_path, 'evaluation_script.zip')
 
-        self.yaml_file = open(join(base_path, 'challenge_config.yaml'))
-        self.yaml_dict = yaml.safe_load(yaml_file)
-        self.copy_dict = copy.deepcopy(yaml_dict)
+        self.yaml_file = open(join(self.base_path, 'challenge_config.yaml'))
+        self.yaml_dict = yaml.safe_load(self.yaml_file)
+        self.copy_dict = copy.deepcopy(self.yaml_dict)
 
 
     def test_create_challenge_using_zip_file_when_zip_file_is_not_uploaded(
@@ -2624,8 +2624,8 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.assertEqual(ChallengePhaseSplit.objects.count(), 2)
 
     def test_create_challenge_using_zip_file_when_not_a_zip_file(self):
-        samplefile = open(path_to_sample_file, 'w+')
-        sample_file = SimpleUploadedFile(path_to_sample_file + '.txt', samplefile.read(), content_type='text/plain')
+        samplefile = open(self.path_to_sample_file, 'w+')
+        sample_file = SimpleUploadedFile(self.path_to_sample_file + '.txt', samplefile.read(), content_type='text/plain')
         expected = {
         'error': ('The zip file contents cannot be extracted. '
                         'Please check the format!')
@@ -2677,7 +2677,7 @@ class CreateChallengeUsingZipFile(APITestCase):
                 challengezip.write(os.path.join(root, file), join('annotation', file))
         for f in self.filenames:
                         chalengezip.write(f)
-        challenge_zip_file = SimpleUploadedFile(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), self.challengezip.read(), content_type='application/zip')
+        challenge_zip_file = SimpleUploadedFile(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), challengezip.read(), content_type='application/zip')
 
         expected = {
         'error': self.message
