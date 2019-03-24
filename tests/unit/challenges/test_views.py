@@ -34,6 +34,7 @@ from participants.models import Participant, ParticipantTeam
 from hosts.models import ChallengeHost, ChallengeHostTeam
 from jobs.models import Submission
 
+from pprint import pprint
 
 class BaseAPITestClass(APITestCase):
     def setUp(self):
@@ -2684,6 +2685,7 @@ class CreateChallengeUsingZipFile(APITestCase):
                     }
         response = self.client.post(self.url, {'zip_configuration': challenge_zip_file}, content_type='multipart/form-data')
         self.assertEqual(response.data, expected)
+        pprint(response.json()['headers'])
         self.assertEqual(response.status_code, self.status_code)
 
     #@create_challenge_test()
