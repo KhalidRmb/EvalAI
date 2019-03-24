@@ -2676,7 +2676,7 @@ class CreateChallengeUsingZipFile(APITestCase):
             for file in files:
                 challengezip.write(os.path.join(root, file), join('annotation', file))
         for f in self.filenames:
-                        chalengezip.write(f)
+                        challengezip.write(f)
         challenge_zip_file = SimpleUploadedFile(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), challengezip.read(), content_type='application/zip')
 
         expected = {
