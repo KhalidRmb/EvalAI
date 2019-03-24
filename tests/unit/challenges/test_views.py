@@ -2679,11 +2679,10 @@ class CreateChallengeUsingZipFile(APITestCase):
                         challengezip.write(f)
         z = open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'rb')
         challenge_zip_file = SimpleUploadedFile(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), z.read(), content_type='application/zip')
-        z.close()
         expected = {
         'error': self.message
                     }
-        response = self.client.post(self.url, {'zip_configuration': challenge_zip_file})
+        response = self.client.post(self.url, {'zip_configuration': z.read()}, content_type='multipart')
         self.assertEqual(response.data, expected)
         self.assertEqual(response.status_code, self.status_code)
 
