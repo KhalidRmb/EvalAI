@@ -2722,15 +2722,16 @@ class CreateChallengeUsingZipFile(APITestCase):
 
     #def test_create_challenge_using_zip_file_when_yaml_syntax_error(self):
 
-    @create_challenge_test
+    #@create_challenge_test
     def test_create_challenge_using_zip_file_when_no_challenge_phases_key(self):
         self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
         self.message = ('No challenge phase key found. '
                         'Please add challenge phases in YAML file and try again!')
         self.element_to_delete = "del copy_dict['challenge_phases']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
+        create_challenge_test()
 
-    @create_challenge_test
+    #@create_challenge_test
     def test_create_challenge_using_zip_file_when_no_key_for_test_annotation(self):
         self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
         self.message = ('There is no key for test annotation file for'
@@ -2738,16 +2739,18 @@ class CreateChallengeUsingZipFile(APITestCase):
                        ' and then try again!'.format(yaml_dict[challenge_phases][1][name]))
         self.element_to_delete = "del copy_dict['challenge_phases'][1]['test_annotation_file']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
+        create_challenge_test()
 
-    @create_challenge_test
+    #@create_challenge_test
     def test_create_challenge_using_zip_file_when_no_key_for_description(self):
         self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
         self.message = ('There is no key for description. '
                         'Please add it and then try again!')
         self.element_to_delete = "del copy_dict['description']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
+        create_challenge_test()
 
-    @create_challenge_test
+    #@create_challenge_test
     def test_create_challenge_using_zip_file_when_no_key_for_eval_details(self):
         self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
         self.message = ('There is no key for evalutaion details. '
@@ -2762,24 +2765,27 @@ class CreateChallengeUsingZipFile(APITestCase):
                         'Please add it and then try again!')
         self.element_to_delete = "del copy_dict['terms_and_conditions']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
+        create_challenge_test()
 
-    @create_challenge_test
+    #@create_challenge_test
     def test_create_challenge_using_zip_file_when_no_key_for_submission_guidelines(self):
         self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
         self.message = ('There is no key for submission guidelines. '
                         'Please add it and then try again!')
         self.element_to_delete = "del copy_dict['submission_guidelines']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
+        create_challenge_test()
 
-    @create_challenge_test
+    #@create_challenge_test
     def test_create_challenge_using_zip_file_when_no_key_for_leaderboard(self):
         self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
         self.message = ('There is no key \'leaderboard\' '
                         'in the YAML file. Please add it and then try again!')
         self.element_to_delete = "del copy_dict['leaderboard']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
+        create_challenge_test()
 
-    @create_challenge_test
+    #@create_challenge_test
     def test_create_challenge_using_zip_file_when_no_key_for_default_order_by_in_lbschema(self):
         self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
         self.message = ('There is no \'default_order_by\' key in leaderboard '
@@ -2787,7 +2793,7 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.element_to_delete = "del copy_dict['leaderboard'][1]['default_order_by']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
 
-    @create_challenge_test
+    #@create_challenge_test
     def test_create_challenge_using_zip_file_when_no_key_for_labels_in_lb_schema(self):
         self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
         self.message = ('There is no \'labels\' key in leaderboard '
@@ -2795,7 +2801,7 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.element_to_delete = "del copy_dict['leaderboard'][1]['labels']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
 
-    @create_challenge_test
+    #@create_challenge_test
     def test_create_challenge_using_zip_file_when_no_key_for_challenge_phase_splits(self):
         self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
         self.message = ('There is no key for challenge phase splits. '
@@ -2803,14 +2809,14 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.element_to_delete = "del copy_dict['challenge_phase_splits']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
 
-    @create_challenge_test
+    #@create_challenge_test
     def test_create_challenge_using_zip_file_when_no_key_for_dataset_splits(self):
         self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
         self.message = 'Error in creating challenge. Please check the yaml configuration!'
         self.element_to_delete = "del copy_dict['dataset_splits']"
         self.status_code = status.HTTP_400_BAD_REQUEST
 
-    @create_challenge_test
+    #@create_challenge_test
     def test_create_challenge_using_zip_file_when_no_test_annotation_file_found(self):
         self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
         self.message = ('No test annotation file found in zip file'
