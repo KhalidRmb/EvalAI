@@ -2667,8 +2667,8 @@ class CreateChallengeUsingZipFile(APITestCase):
     def create_challenge_test(self):
         try:
             exec(self.element_to_delete)
-            with open(self.path_to_altered_yaml, 'w+') as a:
-                yaml.dump(self.copy_dict, a, default_flow_style=False)
+            a = open(self.path_to_altered_yaml, 'w+')
+            yaml.dump(self.copy_dict, a, default_flow_style=False)
         except KeyError: #To catch the case when no element is to be deleted- i.e, empty string is passed as key.
             pass
 
@@ -2765,7 +2765,7 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
         self.message = ('There is no key for terms and conditions. '
                         'Please add it and then try again!')
-        self.element_to_delete = "del copy_dict['terms_and_conditions']"
+        self.element_to_delete = "del self.copy_dict['terms_and_conditions']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
         self.create_challenge_test()
 
