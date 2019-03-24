@@ -2533,6 +2533,9 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.yaml_dict = yaml.safe_load(self.yaml_file)
         self.copy_dict = copy.deepcopy(self.yaml_dict)
 
+        self.alt_file = open(self.path_to_altered_yaml, 'w+')
+        alt_file.write("Sample")
+        alt_file.close()
 
     def test_create_challenge_using_zip_file_when_zip_file_is_not_uploaded(
         self
@@ -2626,6 +2629,7 @@ class CreateChallengeUsingZipFile(APITestCase):
 
     def test_create_challenge_using_zip_file_when_not_a_zip_file(self):
         samplefile = open(self.path_to_sample_file, 'w+')
+        samplefile.write("Test!")
         sample_file = SimpleUploadedFile(self.path_to_sample_file + '.txt', samplefile.read(), content_type='text/plain')
         expected = {
         'error': ('The zip file contents cannot be extracted. '
@@ -2667,7 +2671,7 @@ class CreateChallengeUsingZipFile(APITestCase):
     def create_challenge_test(self):
         try:
             exec(self.element_to_delete)
-            a = open(self.path_to_altered_yaml, 'w+')
+            a = open(self.path_to_altered_yaml, 'r+')
             yaml.dump(self.copy_dict, a, default_flow_style=False)
         except KeyError: #To catch the case when no element is to be deleted- i.e, empty string is passed as key.
             pass
@@ -2683,9 +2687,8 @@ class CreateChallengeUsingZipFile(APITestCase):
         expected = {
         'error': self.message
                     }
-        response = self.client.post(self.url, files={'zip_configuration': challenge_zip_file}, content_type='multipart/form-data')
+        response = self.client.post(self.url, files={'zip_configuration': challenge_zip_file, 'data': 'fake'})
         self.assertEqual(response.data, expected)
-        pprint(response.json()['headers'])
         self.assertEqual(response.status_code, self.status_code)
 
     #@create_challenge_test()
