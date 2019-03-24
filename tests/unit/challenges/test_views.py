@@ -2662,14 +2662,14 @@ class CreateChallengeUsingZipFile(APITestCase):
             self.assertEqual(response.status_code, self.status_code)
         return innerfunc
 
-    @create_challenge_test
+    @create_challenge_test()
     def test_create_challenge_using_zip_file_when_no_yaml_file_present(self):
         self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
         self.message = 'There is no YAML file in zip file you uploaded!'
         self.element_to_delete = ""
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
 
-    @create_challenge_test
+    @create_challenge_test()
     def test_create_challenge_using_zip_file_when_two_yaml_files_present(self):
         self.filenames = [self.path_to_original_yaml_file, self.path_to_altered_yaml, self.path_to_eval_script_zip]
         self.message = 'There are 2 YAML files instead of one in zip folder!'
