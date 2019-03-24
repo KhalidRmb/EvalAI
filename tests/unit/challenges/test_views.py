@@ -2677,16 +2677,15 @@ class CreateChallengeUsingZipFile(APITestCase):
                 challengezip.write(os.path.join(root, file), join('annotation', file))
         for f in self.filenames:
                         challengezip.write(f)
-        z = open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'))
+        z = open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'rb')
         challenge_zip_file = SimpleUploadedFile(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), z.read(), content_type='application/zip')
-
+        z.close()
         expected = {
         'error': self.message
                     }
         response = self.client.post(self.url, {'zip_configuration': challenge_zip_file}, format='multipart')
         self.assertEqual(response.data, expected)
         self.assertEqual(response.status_code, self.status_code)
-        z.close()
 
     #@create_challenge_test()
     def test_create_challenge_using_zip_file_when_no_yaml_file_present(self):
