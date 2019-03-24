@@ -2660,7 +2660,7 @@ class CreateChallengeUsingZipFile(APITestCase):
         expected = {
         'error': self.message
                     }
-        response = self.client.post(self.url, data={'zip_configuration': z.read()})
+        response = self.client.post(self.url, files={'zip_configuration': challenge_zip_file})
         self.assertEqual(response.data, expected)
         self.assertEqual(response.status_code, self.status_code)
 
