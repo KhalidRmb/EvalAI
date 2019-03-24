@@ -2636,8 +2636,9 @@ class CreateChallengeUsingZipFile(APITestCase):
         samplefile.close()
 
     #Decorator function for tests below.
+    '''
     def create_challenge_test(self, func):
-        def innerfunc():
+        def innerfunc(self, func):
             func(*args, **kwargs)
             try:
                 exec(self.element_to_delete)
@@ -2661,13 +2662,37 @@ class CreateChallengeUsingZipFile(APITestCase):
             self.assertEqual(response.data, expected)
             self.assertEqual(response.status_code, self.status_code)
         return innerfunc
+    '''
+    def create_challenge_test(self):
+        try:
+            exec(self.element_to_delete)
+            with open(self.path_to_altered_yaml, 'w+') as a:
+                yaml.dump(self.copy_dict, a, default_flow_style=False)
+        except KeyError: #To catch the case when no element is to be deleted- i.e, empty string is passed as key.
+            pass
 
-    @create_challenge_test()
+        challengezip = zipfile.ZipFile(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'w', zipfile.ZIP_DEFLATED)
+        for root, dirs, files in os.walk(self.path_to_annotation):
+            for file in files:
+                challengezip.write(os.path.join(root, file), join('annotation', file))
+        for f in self.filenames:
+                        chalengezip.write(f)
+        challenge_zip_file = SimpleUploadedFile(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), self.challengezip.read(), content_type='application/zip')
+
+        expected = {
+        'error': self.message
+                    }
+        response = self.client.post(self.url, {'zip_configuration': challenge_zip_file}, format='multipart')
+        self.assertEqual(response.data, expected)
+        self.assertEqual(response.status_code, self.status_code)
+
+    #@create_challenge_test()
     def test_create_challenge_using_zip_file_when_no_yaml_file_present(self):
         self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
         self.message = 'There is no YAML file in zip file you uploaded!'
         self.element_to_delete = ""
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
+        create_challenge_test()
 
     @create_challenge_test()
     def test_create_challenge_using_zip_file_when_two_yaml_files_present(self):
