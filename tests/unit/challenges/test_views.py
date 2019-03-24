@@ -2758,7 +2758,7 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.element_to_delete = "del copy_dict['evaluation_details']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
 
-    @create_challenge_test
+    #@create_challenge_test
     def test_create_challenge_using_zip_file_when_no_key_for_TandC(self):
         self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
         self.message = ('There is no key for terms and conditions. '
