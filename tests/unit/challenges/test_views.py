@@ -2534,8 +2534,8 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.copy_dict = copy.deepcopy(self.yaml_dict)
 
         self.alt_file = open(self.path_to_altered_yaml, 'w+')
-        alt_file.write("Sample")
-        alt_file.close()
+        self.alt_file.write("Sample")
+        self.alt_file.close()
 
     def test_create_challenge_using_zip_file_when_zip_file_is_not_uploaded(
         self
