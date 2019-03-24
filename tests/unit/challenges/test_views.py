@@ -2636,7 +2636,7 @@ class CreateChallengeUsingZipFile(APITestCase):
         samplefile.close()
 
     #Decorator function for tests below.
-    def create_challenge_test(func):
+    def create_challenge_test(self, func):
         def innerfunc():
             func(*args, **kwargs)
             try:
