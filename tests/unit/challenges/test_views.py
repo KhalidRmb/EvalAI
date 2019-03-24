@@ -2692,7 +2692,7 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.message = 'There is no YAML file in zip file you uploaded!'
         self.element_to_delete = ""
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
-        create_challenge_test()
+        self.create_challenge_test()
 
     #@create_challenge_test()
     def test_create_challenge_using_zip_file_when_two_yaml_files_present(self):
@@ -2700,7 +2700,7 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.message = 'There are 2 YAML files instead of one in zip folder!'
         self.element_to_delete = ""
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
-        create_challenge_test()
+        self.create_challenge_test()
 
     #@create_challenge_test
     def test_create_challenge_using_zip_file_when_eval_script_key_missing(self):
@@ -2709,7 +2709,7 @@ class CreateChallengeUsingZipFile(APITestCase):
                         'Please add it and then try again!')
         self.element_to_delete = "del copy_dict['evaluation_script']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
-        create_challenge_test()
+        self.create_challenge_test()
 
     #@create_challenge_test
     def test_create_challenge_using_zip_file_when_no_eval_script_present(self):
@@ -2718,7 +2718,7 @@ class CreateChallengeUsingZipFile(APITestCase):
                         'Please add it and then try again!')
         self.element_to_delete = ""
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
-        create_challenge_test()
+        self.create_challenge_test()
 
     #def test_create_challenge_using_zip_file_when_yaml_syntax_error(self):
 
@@ -2729,7 +2729,7 @@ class CreateChallengeUsingZipFile(APITestCase):
                         'Please add challenge phases in YAML file and try again!')
         self.element_to_delete = "del copy_dict['challenge_phases']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
-        create_challenge_test()
+        self.create_challenge_test()
 
     #@create_challenge_test
     def test_create_challenge_using_zip_file_when_no_key_for_test_annotation(self):
@@ -2739,7 +2739,7 @@ class CreateChallengeUsingZipFile(APITestCase):
                        ' and then try again!'.format(yaml_dict[challenge_phases][1][name]))
         self.element_to_delete = "del copy_dict['challenge_phases'][1]['test_annotation_file']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
-        create_challenge_test()
+        self.create_challenge_test()
 
     #@create_challenge_test
     def test_create_challenge_using_zip_file_when_no_key_for_description(self):
@@ -2748,7 +2748,7 @@ class CreateChallengeUsingZipFile(APITestCase):
                         'Please add it and then try again!')
         self.element_to_delete = "del copy_dict['description']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
-        create_challenge_test()
+        self.create_challenge_test()
 
     #@create_challenge_test
     def test_create_challenge_using_zip_file_when_no_key_for_eval_details(self):
@@ -2765,7 +2765,7 @@ class CreateChallengeUsingZipFile(APITestCase):
                         'Please add it and then try again!')
         self.element_to_delete = "del copy_dict['terms_and_conditions']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
-        create_challenge_test()
+        self.create_challenge_test()
 
     #@create_challenge_test
     def test_create_challenge_using_zip_file_when_no_key_for_submission_guidelines(self):
@@ -2774,7 +2774,7 @@ class CreateChallengeUsingZipFile(APITestCase):
                         'Please add it and then try again!')
         self.element_to_delete = "del copy_dict['submission_guidelines']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
-        create_challenge_test()
+        self.create_challenge_test()
 
     #@create_challenge_test
     def test_create_challenge_using_zip_file_when_no_key_for_leaderboard(self):
@@ -2783,7 +2783,7 @@ class CreateChallengeUsingZipFile(APITestCase):
                         'in the YAML file. Please add it and then try again!')
         self.element_to_delete = "del copy_dict['leaderboard']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
-        create_challenge_test()
+        self.create_challenge_test()
 
     #@create_challenge_test
     def test_create_challenge_using_zip_file_when_no_key_for_default_order_by_in_lbschema(self):
