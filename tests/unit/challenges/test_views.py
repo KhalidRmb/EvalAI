@@ -2659,7 +2659,7 @@ class CreateChallengeUsingZipFile(APITestCase):
                         challengezip.write(f)
 
         challengezip.close()
-        z = open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'rb')
+        z = open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'r')
         zip_file = SimpleUploadedFile(
             z.name,
             z.read(),
