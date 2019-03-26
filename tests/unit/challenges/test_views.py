@@ -2628,7 +2628,7 @@ class CreateChallengeUsingZipFile(APITestCase):
 
     def test_create_challenge_using_zip_file_when_not_a_zip_file(self):
         samplefile = open(self.path_to_sample_file, 'wb+')
-        samplefile.write("Test!")
+        samplefile.write(b"Test!")
         sample_file = SimpleUploadedFile(self.path_to_sample_file + '.txt', samplefile.read(), content_type='text/plain')
         expected = {
         'error': ('The zip file contents cannot be extracted. '
@@ -2655,7 +2655,7 @@ class CreateChallengeUsingZipFile(APITestCase):
         for f in self.filenames:
                         challengezip.write(f)
         z = open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'rb')
-        #challenge_zip_file = TemporaryUploadedFile(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), content_type='application/zip')
+        z.encode('utf-8').strip()
         expected = {
         'error': self.message
                     }
