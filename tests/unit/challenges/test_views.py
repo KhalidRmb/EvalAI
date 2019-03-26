@@ -2627,8 +2627,8 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.assertEqual(ChallengePhaseSplit.objects.count(), 2)
 
     def test_create_challenge_using_zip_file_when_not_a_zip_file(self):
-        samplefile = open(self.path_to_sample_file, 'w+')
-        samplefile.write(b"Test!")
+        samplefile = open(self.path_to_sample_file, 'wb+')
+        samplefile.write("Test!")
         sample_file = SimpleUploadedFile(self.path_to_sample_file + '.txt', samplefile.read(), content_type='text/plain')
         expected = {
         'error': ('The zip file contents cannot be extracted. '
