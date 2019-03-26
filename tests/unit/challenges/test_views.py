@@ -5,6 +5,7 @@ import yaml
 import tempfile
 import zipfile
 import copy
+import requests
 
 from datetime import timedelta
 from os.path import join
@@ -34,7 +35,23 @@ from participants.models import Participant, ParticipantTeam
 from hosts.models import ChallengeHost, ChallengeHostTeam
 from jobs.models import Submission
 
-from pprint import pprint
+def pretty_print_POST(req):
+    """
+    At this point it is completely built and ready
+    to be fired; it is "prepared".
+
+    However pay attention at the formatting used in
+    this function because it is programmed to be pretty
+    printed and may differ from the actual request.
+    """
+    print('{}\n{}\n{}\n\n{}'.format(
+        '-----------START-----------',
+        req.method + ' ' + req.url,
+        '\n'.join('{}: {}'.format(k, v) for k, v in req.headers.items()),
+        req.body,
+    ))
+
+pretty_print_POST(prepared)
 
 class BaseAPITestClass(APITestCase):
     def setUp(self):
@@ -2636,6 +2653,7 @@ class CreateChallengeUsingZipFile(APITestCase):
                         'Please check the format!')
         }
         response = self.client.post(self.url, {'zip_configuration': sample_file})
+        pretty_print_POST(response)
         self.assertEqual(response.data, expected)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         samplefile.close()
@@ -2660,7 +2678,8 @@ class CreateChallengeUsingZipFile(APITestCase):
         expected = {
         'error': self.message
                     }
-        response = self.client.post(self.url, files={'zip_configuration': challenge_zip_file})
+        response = self.client.post(self.url, {'zip_configuration': challenge_zip_file}, format='multipart')
+        pretty_print_POST(response)
         self.assertEqual(response.data, expected)
         self.assertEqual(response.status_code, self.status_code)
 
