@@ -10,7 +10,7 @@ import requests
 from datetime import timedelta
 from os.path import join
 
-from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.files.uploadedfile import SimpleUploadedFile, UploadedFile
 from django.core.urlresolvers import reverse_lazy
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -2660,7 +2660,6 @@ class CreateChallengeUsingZipFile(APITestCase):
         'error': self.message
                     }
         response = self.client.post(self.url, {'zip_configuration': challenge_zip_file}, format='multipart')
-        pretty_print_POST(response)
         self.assertEqual(response.data, expected)
         self.assertEqual(response.status_code, self.status_code)
 
