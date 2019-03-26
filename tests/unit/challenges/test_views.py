@@ -51,8 +51,6 @@ def pretty_print_POST(req):
         req.body,
     ))
 
-pretty_print_POST(prepared)
-
 class BaseAPITestClass(APITestCase):
     def setUp(self):
         self.client = APIClient(enforce_csrf_checks=True)
