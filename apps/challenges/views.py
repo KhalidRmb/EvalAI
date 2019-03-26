@@ -522,9 +522,9 @@ def create_challenge_using_zip_file(request, challenge_host_team_pk):
             logger.exception(message)
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
 
-    except requests.exceptions.RequestException:
+    except requests.exceptions.RequestException as e:
         message = ('A server error occured while processing zip file. '
-                   'Please try again!')
+                   'Please try again!' + e)
         response_data = {
             'error': message
         }
