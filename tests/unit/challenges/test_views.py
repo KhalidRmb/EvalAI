@@ -2657,16 +2657,19 @@ class CreateChallengeUsingZipFile(APITestCase):
                 challengezip.write(os.path.join(root, file), join('annotation', file))
         for f in self.filenames:
                         challengezip.write(f)
-        z = open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'rb')
-        zip_file = SimpleUploadedFile(
+
+        zippedfiles = [challengezip.read(name) for name in challengezip.namelist()]
+
+        #z = open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'rb')
+        '''zip_file = SimpleUploadedFile(
             z.name,
             z.read(),
             content_type="application/zip",
-        )
+        )'''
         expected = {
         'error': self.message
                     }
-        response = self.client.post(self.url, {'zip_configuration': zip_file})
+        response = self.client.post(self.url, {'zip_configuration': zippedfiles})
         self.assertEqual(response.data, expected)
         self.assertEqual(response.status_code, self.status_code)
 
