@@ -503,7 +503,7 @@ def create_challenge_using_zip_file(request, challenge_host_team_pk):
     # All files download and extract location.
     BASE_LOCATION = tempfile.mkdtemp()
     try:
-        response = requests.get(uploaded_zip_file_path, stream=True)
+        response = requests.get(uploaded_zip_file_path, stream=True) #This is where it's not working
         unique_folder_name = ''.join(
             [random.choice(
                 string.ascii_letters + string.digits) for i in xrange(10)])
@@ -524,7 +524,7 @@ def create_challenge_using_zip_file(request, challenge_host_team_pk):
 
     except requests.exceptions.RequestException as e:
         message = ('A server error occured while processing zip file. '
-                   'Please try again!' + e)
+                   'Please try again!' + str(e)
         response_data = {
             'error': message
         }
