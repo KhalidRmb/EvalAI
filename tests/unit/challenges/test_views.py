@@ -2628,13 +2628,13 @@ class CreateChallengeUsingZipFile(APITestCase):
 
     def test_create_challenge_using_zip_file_when_not_a_zip_file(self):
         samplefile = open(self.path_to_sample_file, 'w+')
-        samplefile.write("Test!")
+        samplefile.write(b"Test!")
         sample_file = SimpleUploadedFile(self.path_to_sample_file + '.txt', samplefile.read(), content_type='text/plain')
         expected = {
         'error': ('The zip file contents cannot be extracted. '
                         'Please check the format!')
         }
-        response = self.client.post(self.url, {'zip_configuration': sample_file})
+        response = self.client.post(self.url, {'zip_configuration': samplefile})
         self.assertEqual(response.data, expected)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         samplefile.close()
@@ -2655,11 +2655,11 @@ class CreateChallengeUsingZipFile(APITestCase):
         for f in self.filenames:
                         challengezip.write(f)
         z = open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'rb')
-        challenge_zip_file = TemporaryUploadedFile(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), content_type='application/zip')
+        #challenge_zip_file = TemporaryUploadedFile(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), content_type='application/zip')
         expected = {
         'error': self.message
                     }
-        response = self.client.post(self.url, {'zip_configuration': challenge_zip_file})
+        response = self.client.post(self.url, {'zip_configuration': z})
         self.assertEqual(response.data, expected)
         self.assertEqual(response.status_code, self.status_code)
 
