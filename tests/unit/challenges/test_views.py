@@ -2634,7 +2634,7 @@ class CreateChallengeUsingZipFile(APITestCase):
         'error': ('The zip file contents cannot be extracted. '
                         'Please check the format!')
         }
-        response = self.client.post(self.url, {'zip_configuration': samplefile})
+        response = self.client.post(self.url, {'zip_configuration': sample_file.read()})
         self.assertEqual(response.data, expected)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         samplefile.close()
@@ -2654,12 +2654,12 @@ class CreateChallengeUsingZipFile(APITestCase):
                 challengezip.write(os.path.join(root, file), join('annotation', file))
         for f in self.filenames:
                         challengezip.write(f)
-        z = open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'rb')
-        z.encode('utf-8').strip()
+        #z = open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'rb')
+        z = challengezip.open()
         expected = {
         'error': self.message
                     }
-        response = self.client.post(self.url, {'zip_configuration': z})
+        response = self.client.post(self.url, {'zip_configuration': z.read()})
         self.assertEqual(response.data, expected)
         self.assertEqual(response.status_code, self.status_code)
 
