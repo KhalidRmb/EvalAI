@@ -2637,7 +2637,7 @@ class CreateChallengeUsingZipFile(APITestCase):
         'error': ('The zip file contents cannot be extracted. '
                         'Please check the format!')
         }
-        response = self.client.post(self.url, data={'zip_configuration': samplefile}, content_type="multipart")
+        response = self.client.post(self.url, data={'zip_configuration': samplefile})
         self.assertEqual(response.data, expected)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         samplefile.close()
