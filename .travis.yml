@@ -37,8 +37,3 @@ script:
 after_success:
 - coveralls --rcfile=.coveragerc
 - ./scripts/deployment/push.sh
-notifications:
-  email:
-    on_success: change
-    on_failure: always
-    slack: cloudcv:gy3CGQGNXLwXOqVyzXGZfdea
