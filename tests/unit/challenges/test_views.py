@@ -2626,7 +2626,7 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.assertEqual(Leaderboard.objects.count(), 2)
         self.assertEqual(ChallengePhaseSplit.objects.count(), 2)
 
-    '''def test_create_challenge_using_zip_file_when_not_a_zip_file(self):
+    '''def test_create_challenge_using_zip_file_when_not_a_zip_file(self): #can we use something like that text data option here?
         #samplefile = open(self.path_to_sample_file, 'wb+')
         #samplefile.write(b"Test!")
         samplefile = SimpleUploadedFile(
@@ -2659,7 +2659,7 @@ class CreateChallengeUsingZipFile(APITestCase):
                         challengezip.write(f)
 
         challengezip.close()
-        z = open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'r', encoding='utf-8')
+        z = open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'r', encoding='utf8')
         '''zip_file = SimpleUploadedFile(
             z.name,
             z.read(),
