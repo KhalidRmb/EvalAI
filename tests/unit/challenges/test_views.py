@@ -2664,7 +2664,7 @@ class CreateChallengeUsingZipFile(APITestCase):
         challengezip.close()
         #z = open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'r')
         #codecs.encode()
-        z = codecs.open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'r', 'CP437')
+        z = codecs.open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'r')
 
         '''zip_file = SimpleUploadedFile(
             z.name,
