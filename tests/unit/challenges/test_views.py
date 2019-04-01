@@ -2654,15 +2654,15 @@ class CreateChallengeUsingZipFile(APITestCase):
         challengezip = zipfile.ZipFile(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'w', zipfile.ZIP_DEFLATED)
         for root, dirs, files in os.walk(self.path_to_annotation):
             for file in files:
-                archivename = bytes(join('annotation', file), 'utf-8')
-                challengezip.writestr(os.path.join(root, file), archivename)
+                archivename = bytes(join('annotation', file))
+                challengezip.write(os.path.join(root, file), archivename)
         for f in self.filenames:
-            archivename = bytes(os.path.splitext(f)[0], 'utf-8')
-            challengezip.writestr(f, archivename)
+            archivename = bytes(os.path.splitext(f)[0])
+            challengezip.write(f, archivename)
 
         challengezip.close()
-        z = open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'rb')
-        contents = z.read()
+        z = open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'r')
+
         '''zip_file = SimpleUploadedFile(
             z.name,
             z.read(),
@@ -2671,7 +2671,7 @@ class CreateChallengeUsingZipFile(APITestCase):
         expected = {
         'error': self.message
                     }
-        response = self.client.post(self.url, {'zip_configuration': contents})
+        response = self.client.post(self.url, {'zip_configuration': z})
         self.assertEqual(response.data, expected)
         self.assertEqual(response.status_code, self.status_code)
 
