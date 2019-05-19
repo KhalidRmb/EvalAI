@@ -2523,17 +2523,17 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.BASE_TEMP_LOCATION = tempfile.mkdtemp()
         self.base_path = join(settings.BASE_DIR, 'tests', 'unit', 'challenges', 'data')
 
-        self.path_to_annotation = join(self.base_path, 'annotations')
-        self.path_to_original_yaml_file = join(self.base_path, 'challenge_config.yaml')
-        self.path_to_altered_yaml = join(self.BASE_TEMP_LOCATION, "altered_yaml_file.yaml")
-        self.path_to_sample_file = join(self.BASE_TEMP_LOCATION, 'sample.txt')
-        self.path_to_eval_script_zip = join(self.base_path, 'evaluation_script.zip')
+        self.annotation_file_path = join(self.base_path, 'annotations')
+        self.challenge_config_yaml_path = join(self.base_path, 'challenge_config.yaml')
+        self.altered_challenge_config_yaml_path = join(self.BASE_TEMP_LOCATION, "altered_yaml_file.yaml")
+        self.challenge_config_in_txt_format_path = join(self.BASE_TEMP_LOCATION, 'sample.txt')
+        self.evaluation_script_file_path = join(self.base_path, 'evaluation_script.zip')
 
         self.yaml_file = open(join(self.base_path, 'challenge_config.yaml'))
         self.yaml_dict = yaml.safe_load(self.yaml_file)
         self.copy_dict = copy.deepcopy(self.yaml_dict)
 
-        self.alt_file = open(self.path_to_altered_yaml, 'w+')
+        self.alt_file = open(self.altered_challenge_config_yaml_path, 'w+')
         self.alt_file.write("Sample")
         self.alt_file.close()
 
@@ -2627,33 +2627,17 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.assertEqual(Leaderboard.objects.count(), 2)
         self.assertEqual(ChallengePhaseSplit.objects.count(), 2)
 
-    '''def test_create_challenge_using_zip_file_when_not_a_zip_file(self): #can we use something like that text data option here?
-        #samplefile = open(self.path_to_sample_file, 'wb+')
-        #samplefile.write(b"Test!")
-        samplefile = SimpleUploadedFile(
-            "dummy_input.txt", b"file_content", content_type="text/plain")
-
-        #sample_file = SimpleUploadedFile(self.path_to_sample_file + '.txt', samplefile.read(), content_type='text/plain')
-        expected = {
-        'error': ('The zip file contents cannot be extracted. '
-                        'Please check the format!')
-        }
-        response = self.client.post(self.url, data={'zip_configuration': samplefile})
-        self.assertEqual(response.data, expected)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        samplefile.close()'''
-
     # Helper function for tests below.
-    def create_challenge_test(self):
+    def create_challenge_test_helper(self):
         try:
             exec(self.element_to_delete)
-            a = open(self.path_to_altered_yaml, 'r+')
+            a = open(self.altered_challenge_config_yaml_path, 'r+')
             yaml.dump(self.copy_dict, a, default_flow_style=False)
-        except KeyError: # To catch the case when no element is to be deleted- i.e, empty string is passed as key.
-            pass
+        except KeyError: # To catch the case when no element is to be deleted from the yaml file
+            pass         # i.e, empty string is passed as key. (Useful for some test cases).
 
         challengezip = zipfile.ZipFile(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'w', zipfile.ZIP_DEFLATED)
-        for root, dirs, files in os.walk(self.path_to_annotation):
+        for root, dirs, files in os.walk(self.annotation_file_path):
             for file in files:
                 archivename = join('annotation', file)
                 challengezip.write(os.path.join(root, file), archivename)
@@ -2662,15 +2646,9 @@ class CreateChallengeUsingZipFile(APITestCase):
             challengezip.write(f, archivename)
 
         challengezip.close()
-        #z = open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'r')
-        #codecs.encode()
-        z = codecs.open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'r')
 
-        '''zip_file = SimpleUploadedFile(
-            z.name,
-            z.read(),
-            content_type="application/zip",
-        )'''
+        z = open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'r')
+
         expected = {
         'error': self.message
                     }
@@ -2679,137 +2657,138 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.assertEqual(response.status_code, self.status_code)
 
     def test_create_challenge_using_zip_file_when_no_yaml_file_present(self):
-        self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
+        self.filenames = [self.challenge_config_yaml_path, self.evaluation_script_file_path]
         self.message = 'There is no YAML file in zip file you uploaded!'
         self.element_to_delete = "del self.copy_dict['']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
-        self.create_challenge_test()
+        self.create_challenge_test_helper()
 
     def test_create_challenge_using_zip_file_when_two_yaml_files_present(self):
-        self.filenames = [self.path_to_original_yaml_file, self.path_to_altered_yaml, self.path_to_eval_script_zip]
+        self.filenames = [self.challenge_config_yaml_path, self.challenge_config_yaml_path, self.evaluation_script_file_path]
         self.message = 'There are 2 YAML files instead of one in zip folder!'
         self.element_to_delete = "del self.copy_dict['']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
-        self.create_challenge_test()
+        self.create_challenge_test_helper()
 
-    def test_create_challenge_using_zip_file_when_eval_script_key_missing(self):
-        self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
+    def test_create_challenge_using_zip_file_when_eval_script_key_is_missing(self):
+        self.filenames = [self.challenge_config_yaml_path, self.evaluation_script_file_path]
         self.message = ('There is no key for evaluation script in YAML file. '
                         'Please add it and then try again!')
         self.element_to_delete = "del self.copy_dict['evaluation_script']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
-        self.create_challenge_test()
+        self.create_challenge_test_helper()
 
-    #@create_challenge_test
     def test_create_challenge_using_zip_file_when_no_eval_script_present(self):
-        self.filenames = [self.path_to_altered_yaml]
+        self.filenames = [self.challenge_config_yaml_path]
         self.message = ('No evaluation script is present in the zip file. '
                         'Please add it and then try again!')
         self.element_to_delete = "del self.copy_dict['']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
-        self.create_challenge_test()
-
-    #def test_create_challenge_using_zip_file_when_yaml_syntax_error(self):
+        self.create_challenge_test_helper()
 
     def test_create_challenge_using_zip_file_when_no_challenge_phases_key(self):
-        self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
+        self.filenames = [self.challenge_config_yaml_path, self.evaluation_script_file_path]
         self.message = ('No challenge phase key found. '
                         'Please add challenge phases in YAML file and try again!')
         self.element_to_delete = "del self.copy_dict['challenge_phases']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
-        self.create_challenge_test()
+        self.create_challenge_test_helper()
 
     def test_create_challenge_using_zip_file_when_no_key_for_test_annotation(self):
-        self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
+        self.filenames = [self.challenge_config_yaml_path, self.evaluation_script_file_path]
         self.message = ('There is no key for test annotation file for'
                        'challenge phase {} in yaml file. Please add it'
                        ' and then try again!'.format(yaml_dict[challenge_phases][1][name]))
         self.element_to_delete = "del self.copy_dict['challenge_phases'][1]['test_annotation_file']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
-        self.create_challenge_test()
+        self.create_challenge_test_helper()
 
     def test_create_challenge_using_zip_file_when_no_key_for_description(self):
-        self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
+        self.filenames = [self.challenge_config_yaml_path, self.evaluation_script_file_path]
         self.message = ('There is no key for description. '
                         'Please add it and then try again!')
         self.element_to_delete = "del self.copy_dict['description']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
-        self.create_challenge_test()
+        self.create_challenge_test_helper()
 
     def test_create_challenge_using_zip_file_when_no_key_for_eval_details(self):
-        self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
+        self.filenames = [self.challenge_config_yaml_path, self.evaluation_script_file_path]
         self.message = ('There is no key for evalutaion details. '
                         'Please add it and then try again!')
         self.element_to_delete = "del self.copy_dict['evaluation_details']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
 
-    #@create_challenge_test
     def test_create_challenge_using_zip_file_when_no_key_for_TandC(self):
-        self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
+        self.filenames = [self.challenge_config_yaml_path, self.evaluation_script_file_path]
         self.message = ('There is no key for terms and conditions. '
                         'Please add it and then try again!')
         self.element_to_delete = "del self.copy_dict['terms_and_conditions']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
-        self.create_challenge_test()
+        self.create_challenge_test_helper()
 
     def test_create_challenge_using_zip_file_when_no_key_for_submission_guidelines(self):
-        self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
+        self.filenames = [self.challenge_config_yaml_path, self.evaluation_script_file_path]
         self.message = ('There is no key for submission guidelines. '
                         'Please add it and then try again!')
         self.element_to_delete = "del self.copy_dict['submission_guidelines']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
-        self.create_challenge_test()
+        self.create_challenge_test_helper()
 
     def test_create_challenge_using_zip_file_when_no_key_for_leaderboard(self):
-        self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
+        self.filenames = [self.challenge_config_yaml_path, self.evaluation_script_file_path]
         self.message = ('There is no key \'leaderboard\' '
                         'in the YAML file. Please add it and then try again!')
         self.element_to_delete = "del self.copy_dict['leaderboard']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
-        self.create_challenge_test()
+        self.create_challenge_test_helper()
 
     def test_create_challenge_using_zip_file_when_no_key_for_default_order_by_in_lbschema(self):
-        self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
+        self.filenames = [self.challenge_config_yaml_path, self.evaluation_script_file_path]
         self.message = ('There is no \'default_order_by\' key in leaderboard '
                         'schema. Please add it and then try again!')
         self.element_to_delete = "del self.copy_dict['leaderboard'][1]['default_order_by']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
+        self.create_challenge_test_helper()
 
     def test_create_challenge_using_zip_file_when_no_key_for_labels_in_lb_schema(self):
-        self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
+        self.filenames = [self.challenge_config_yaml_path, self.evaluation_script_file_path]
         self.message = ('There is no \'labels\' key in leaderboard '
                         'schema. Please add it and then try again!')
         self.element_to_delete = "del self.copy_dict['leaderboard'][1]['labels']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
+        self.create_challenge_test_helper()
 
-    #@create_challenge_test
     def test_create_challenge_using_zip_file_when_no_key_for_challenge_phase_splits(self):
-        self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
+        self.filenames = [self.challenge_config_yaml_path, self.evaluation_script_file_path]
         self.message = ('There is no key for challenge phase splits. '
                         'Please add it and then try again!')
         self.element_to_delete = "del self.copy_dict['challenge_phase_splits']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
+        self.create_challenge_test_helper()
 
     def test_create_challenge_using_zip_file_when_no_key_for_dataset_splits(self):
-        self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
+        self.filenames = [self.challenge_config_yaml_path, self.evaluation_script_file_path]
         self.message = 'Error in creating challenge. Please check the yaml configuration!'
         self.element_to_delete = "del self.copy_dict['dataset_splits']"
         self.status_code = status.HTTP_400_BAD_REQUEST
+        self.create_challenge_test_helper()
+
+    #def test_create_challenge_using_zip_file_when_yaml_syntax_error(self):
 
     def test_create_challenge_using_zip_file_when_no_test_annotation_file_found(self):
-        self.filenames = [self.path_to_altered_yaml, self.path_to_eval_script_zip]
+        self.filenames = [self.challenge_config_yaml_path, self.evaluation_script_file_path]
         self.message = ('No test annotation file found in zip file'
                         'for challenge phase \'{}\'. Please add it and '
                         ' then try again!'.format(yaml_dict[challenge_phases][1][name]))
         self.element_to_delete = "del self.copy_dict['']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
+        self.create_challenge_test_helper()
 
         shutil.rmtree(BASE_TEMP_LOCATION)
 
-    #Once PR is Merged:
     #def test_create_challenge_using_zip_file_when_some_serializer_error(self):
 
-    #def test_create_challlenge_using_zip_file_when_challenge_is_docker_based(self): #????DO THIS OR NOT?
+    #def test_create_challlenge_using_zip_file_when_challenge_is_docker_based(self): #?
         #Make sure that challenge host team is not added as a participant.(?)
 
 class GetAllSubmissionsTest(BaseAPITestClass):

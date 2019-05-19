@@ -1,5 +1,5 @@
 language: python
-sudo: false
+sudo: true
 services:
 - docker
 python:
@@ -30,10 +30,10 @@ before_install:
 - sudo rm -f /etc/boto.cfg
 install:
 - pip install -r requirements/dev.txt
-- pip install awscli==1.16.57 coveralls
+#- pip install awscli==1.16.57 coveralls
 script:
 #- flake8 ./
 - py.test ./tests/unit/challenges/test_views.py
 after_success:
-- coveralls --rcfile=.coveragerc
-- ./scripts/deployment/push.sh
+#- coveralls --rcfile=.coveragerc
+#- ./scripts/deployment/push.sh
