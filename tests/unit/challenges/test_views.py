@@ -2644,7 +2644,7 @@ class CreateChallengeUsingZipFile(APITestCase):
                 challengezip.write(os.path.join(root, file), archivename)
         for f in self.filenames:
             tmpname = os.path.splitext(f)[0]
-            archivename = os.path.split(tmpname)
+            archivename = os.path.split(tmpname)[1]
             challengezip.write(f, archivename)
 
         challengezip.close()
