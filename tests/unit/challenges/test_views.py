@@ -7,6 +7,7 @@ import zipfile
 import copy
 import requests
 import codecs
+import io
 
 from datetime import timedelta
 from os.path import join
@@ -2647,14 +2648,15 @@ class CreateChallengeUsingZipFile(APITestCase):
 
         challengezip.close()
 
-        z = open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'r')
+        #z = open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'r')
+        with io.open(filename, 'r', encoding='utf8') as f
 
-        expected = {
-        'error': self.message
-                    }
-        response = self.client.post(self.url, {'zip_configuration': z}, format='multipart')
-        self.assertEqual(response.data, expected)
-        self.assertEqual(response.status_code, self.status_code)
+            expected = {
+            'error': self.message
+                       }
+            response = self.client.post(self.url, {'zip_configuration': f}, format='multipart')
+            self.assertEqual(response.data, expected)
+            self.assertEqual(response.status_code, self.status_code)
 
     def test_create_challenge_using_zip_file_when_no_yaml_file_present(self):
         self.filenames = [self.challenge_config_yaml_path, self.evaluation_script_file_path]
