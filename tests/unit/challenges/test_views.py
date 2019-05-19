@@ -2649,7 +2649,13 @@ class CreateChallengeUsingZipFile(APITestCase):
         challengezip.close()
 
         #z = open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'r')
-        with io.open(filename, 'r', encoding='utf8') as f
+        with io.open(filename, 'r', encoding='utf8') as f:
+
+            z = SimpleUploadedFile(
+                f.name,
+                f.read(),
+                content_type="application/zip",
+            )
 
             expected = {
             'error': self.message
