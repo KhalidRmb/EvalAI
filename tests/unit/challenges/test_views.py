@@ -2641,7 +2641,7 @@ class CreateChallengeUsingZipFile(APITestCase):
         for root, dirs, files in os.walk(self.annotation_file_path):
             for file in files:
                 archivename = join('annotation', file)
-                a = archivename.encode()
+                a = bytes(archivename,'utf-8')
                 challengezip.write(os.path.join(root, file), a)
 
         for f in self.filenames:
