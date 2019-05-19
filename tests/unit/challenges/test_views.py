@@ -2643,12 +2643,12 @@ class CreateChallengeUsingZipFile(APITestCase):
                 archivename = join('annotation', file)
                 challengezip.write(os.path.join(root, file), archivename)
         for f in self.filenames:
-            archivename = os.path.splitext(f)[0]
+            tmpname = os.path.splitext(f)[0]
+            archivename = os.path.split(tmpname)
             challengezip.write(f, archivename)
 
         challengezip.close()
 
-        #z = open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'r')
         with io.open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'r', encoding='utf8') as f:
 
             z = SimpleUploadedFile(
@@ -2660,12 +2660,12 @@ class CreateChallengeUsingZipFile(APITestCase):
             expected = {
             'error': self.message
                        }
-            response = self.client.post(self.url, {'zip_configuration': z}, format='multipart')
+            response = self.client.post(self.url, {'zip_configuration': f}, format='multipart')
             self.assertEqual(response.data, expected)
             self.assertEqual(response.status_code, self.status_code)
 
     def test_create_challenge_using_zip_file_when_no_yaml_file_present(self):
-        self.filenames = [self.challenge_config_yaml_path, self.evaluation_script_file_path]
+        self.filenames = [self.evaluation_script_file_path]
         self.message = 'There is no YAML file in zip file you uploaded!'
         self.element_to_delete = "del self.copy_dict['']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
