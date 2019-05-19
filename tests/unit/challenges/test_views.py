@@ -2641,11 +2641,13 @@ class CreateChallengeUsingZipFile(APITestCase):
         for root, dirs, files in os.walk(self.annotation_file_path):
             for file in files:
                 archivename = join('annotation', file)
-                challengezip.write(os.path.join(root, file), archivename)
+                a = archivename.encode()
+                challengezip.write(os.path.join(root, file), a)
+
         for f in self.filenames:
-            tmpname = os.path.splitext(f)[0]
-            archivename = os.path.split(tmpname)[1]
-            challengezip.write(f, archivename)
+            archivename = os.path.split(f)[1]
+            a = archivename.encode()
+            challengezip.write(f, a)
 
         challengezip.close()
 
@@ -2672,7 +2674,7 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.create_challenge_test_helper()
 
     def test_create_challenge_using_zip_file_when_two_yaml_files_present(self):
-        self.filenames = [self.challenge_config_yaml_path, self.challenge_config_yaml_path, self.evaluation_script_file_path]
+        self.filenames = [self.altered_challenge_config_yaml_path, self.challenge_config_yaml_path, self.evaluation_script_file_path]
         self.message = 'There are 2 YAML files instead of one in zip folder!'
         self.element_to_delete = "del self.copy_dict['']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
