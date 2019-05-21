@@ -2630,7 +2630,7 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.assertEqual(ChallengePhaseSplit.objects.count(), 2)
 
     # Helper function for tests below.
-    """def create_challenge_test_helper(self):
+    def create_challenge_test_helper(self):
         try:
             exec(self.element_to_delete)
             a = open(self.altered_challenge_config_yaml_path, 'r+')
@@ -2652,21 +2652,21 @@ class CreateChallengeUsingZipFile(APITestCase):
 
         with open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'rb') as f:
 
-            z = SimpleUploadedFile(
+            '''z = SimpleUploadedFile(
                 f.name,
                 f.read(),
                 content_type="application/zip",
-            )
+            )'''
 
             expected = {
             'error': self.message
                        }
             response = self.client.post(self.url, {'zip_configuration': z}, format='multipart')
             self.assertEqual(response.data, expected)
-            self.assertEqual(response.status_code, self.status_code)"""
+            self.assertEqual(response.status_code, self.status_code)
             
 
-    def create_challenge_test_helper(self):
+    '''def create_challenge_test_helper(self):
         challengezip = zipfile.ZipFile(join(self.base_path, "ziptest.zip"), 'w')
         testtextfile = open(join(self.base_path, 'test.txt'))
         challengezip.write(join(self.base_path, 'test.txt'))
@@ -2684,7 +2684,7 @@ class CreateChallengeUsingZipFile(APITestCase):
             'error': self.message
                        }
         response = self.client.post(self.url, {'zip_configuration': z}, format='multipart')
-        self.assertEqual(response.data, expected)
+        self.assertEqual(response.data, expected)'''
 
     def test_create_challenge_using_zip_file_when_no_yaml_file_present(self):
         self.filenames = [self.evaluation_script_file_path]
