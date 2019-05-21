@@ -42,7 +42,7 @@ install:
 - pip install awscli==1.16.57 coveralls
 script:
 - karma start --single-run
-- py.test /tests/unit/challenges/test_views.py
+- pytest /tests/unit/challenges/test_views.py
 after_success:
 - coveralls --rcfile=.coveragerc
 - ./scripts/deployment/push.sh
