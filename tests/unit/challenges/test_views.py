@@ -2669,8 +2669,8 @@ class CreateChallengeUsingZipFile(APITestCase):
 
     def create_challenge_test_helper(self):
         challengezip = zipfile.ZipFile(join(self.base_path, "ziptest.zip"), 'w')
-        testtextfile = open(os.join(self.base_path, 'test.txt'))
-        challengezip.write(os.join(self.base_path, 'test.txt'))
+        testtextfile = open(join(self.base_path, 'test.txt'))
+        challengezip.write(join(self.base_path, 'test.txt'))
         challengezip.close()
         test_file = open(
             join(self.base_path, "ziptest.zip"),
