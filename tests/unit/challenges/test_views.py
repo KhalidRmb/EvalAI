@@ -2630,7 +2630,7 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.assertEqual(ChallengePhaseSplit.objects.count(), 2)
 
     # Helper function for tests below.
-    def create_challenge_test_helper(self):
+    """def create_challenge_test_helper(self):
         try:
             exec(self.element_to_delete)
             a = open(self.altered_challenge_config_yaml_path, 'r+')
@@ -2638,7 +2638,7 @@ class CreateChallengeUsingZipFile(APITestCase):
         except KeyError: # To catch the case when no element is to be deleted from the yaml file
             pass         # i.e, empty string is passed as key. (Useful for some test cases).
 
-        challengezip = zipfile.ZipFile(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'w', zipfile.ZIP_DEFLATED)
+        challengezip = zipfile.ZipFile(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'w')
         for root, dirs, files in os.walk(self.annotation_file_path):
             for file in files:
                 archivename = join('annotation', file)
@@ -2646,12 +2646,11 @@ class CreateChallengeUsingZipFile(APITestCase):
 
         for f in self.filenames:
             archivename = os.path.split(f)[1]
-            a = archivename.encode()
             challengezip.write(f, archivename)
 
         challengezip.close()
 
-        with io.open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'rb') as f:
+        with open(join(self.BASE_TEMP_LOCATION,'challenge_zip.zip'), 'rb') as f:
 
             z = SimpleUploadedFile(
                 f.name,
@@ -2664,10 +2663,10 @@ class CreateChallengeUsingZipFile(APITestCase):
                        }
             response = self.client.post(self.url, {'zip_configuration': z}, format='multipart')
             self.assertEqual(response.data, expected)
-            self.assertEqual(response.status_code, self.status_code)
+            self.assertEqual(response.status_code, self.status_code)"""
             
 
-    '''def create_challenge_test_helper(self):
+    def create_challenge_test_helper(self):
         challengezip = zipfile.ZipFile(join(self.base_path, "ziptest.zip"), 'w')
         testtextfile = open(join(self.base_path, 'test.txt'))
         challengezip.write(join(self.base_path, 'test.txt'))
@@ -2685,7 +2684,7 @@ class CreateChallengeUsingZipFile(APITestCase):
             'error': self.message
                        }
         response = self.client.post(self.url, {'zip_configuration': z}, format='multipart')
-        self.assertEqual(response.data, expected)'''
+        self.assertEqual(response.data, expected)
 
     def test_create_challenge_using_zip_file_when_no_yaml_file_present(self):
         self.filenames = [self.evaluation_script_file_path]
@@ -2729,7 +2728,7 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.filenames = [self.challenge_config_yaml_path, self.evaluation_script_file_path]
         self.message = ('There is no key for test annotation file for'
                        'challenge phase {} in yaml file. Please add it'
-                       ' and then try again!'.format(yaml_dict[challenge_phases][1][name]))
+                       ' and then try again!'.format(self.yaml_dict[challenge_phases][1][name]))
         self.element_to_delete = "del self.copy_dict['challenge_phases'][1]['test_annotation_file']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
         self.create_challenge_test_helper()
@@ -2810,7 +2809,7 @@ class CreateChallengeUsingZipFile(APITestCase):
         self.filenames = [self.challenge_config_yaml_path, self.evaluation_script_file_path]
         self.message = ('No test annotation file found in zip file'
                         'for challenge phase \'{}\'. Please add it and '
-                        ' then try again!'.format(yaml_dict[challenge_phases][1][name]))
+                        ' then try again!'.format(self.yaml_dict[challenge_phases][1][name]))
         self.element_to_delete = "del self.copy_dict['']"
         self.status_code = status.HTTP_406_NOT_ACCEPTABLE
         self.create_challenge_test_helper()
