@@ -2681,7 +2681,7 @@ class CreateChallengeUsingZipFile(APITestCase):
             test_file.read(),
             content_type='application/zip'
             )
-        response = self.client.post(self.url, {'zip_configuration': f}, format='multipart')
+        response = self.client.post(self.url, {'zip_configuration': z}, format='multipart')
 
     def test_create_challenge_using_zip_file_when_no_yaml_file_present(self):
         self.filenames = [self.evaluation_script_file_path]
