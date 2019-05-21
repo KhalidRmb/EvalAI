@@ -2668,7 +2668,7 @@ class CreateChallengeUsingZipFile(APITestCase):
             """
 
     def create_challenge_test_helper(self):
-        challlengezip = zipfile.ZipFile(join(self.base_path, "ziptest.zip"), 'w')
+        challengezip = zipfile.ZipFile(join(self.base_path, "ziptest.zip"), 'w')
         testtextfile = SimpleUploadedFile(
                     "test_sample_file.txt",
                     b"Dummy file content 1",
