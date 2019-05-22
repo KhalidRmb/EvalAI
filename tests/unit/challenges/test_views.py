@@ -192,7 +192,7 @@ class BaseerAPITestClass(APITestCase):
         self.assertTrue(queue_url)
         client.delete_queue(QueueUrl=queue_url)
 
-    @mock_sqs():
+    @mock_sqs()
     def test_get_or_create_sqs_queue_for_non_existing_queue(self):
         client = boto3.client('sqs')
         queue = get_or_create_sqs_queue("test_queue_2")
