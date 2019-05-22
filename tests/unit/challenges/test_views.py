@@ -95,7 +95,6 @@ class BaseerAPITestClass(APITestCase):
             start_date=timezone.now(),
             end_date=timezone.now() + timedelta(days=1),
             published=True,
-            evaluation_script=
             approved_by_admin=True,
             enable_forum=True,
             anonymous_leaderboard=False)
