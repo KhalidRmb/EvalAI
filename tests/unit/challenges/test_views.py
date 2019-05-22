@@ -111,7 +111,8 @@ class BaseerAPITestClass(APITestCase):
                 end_date=timezone.now() + timedelta(days=1),
                 challenge=self.challenge,
                 test_annotation=SimpleUploadedFile('test_sample_file.txt',
-                                                   'Dummy file content', content_type='text/plain')
+                                                   b'Dummy file content', 
+                                                   content_type='text/plain')
             )
 
         self.url = reverse_lazy('jobs:challenge_submission',
@@ -121,7 +122,7 @@ class BaseerAPITestClass(APITestCase):
         self.client.force_authenticate(user=self.user1)
 
         self.input_file = SimpleUploadedFile(
-            "dummy_input.txt", "file_content", content_type="text/plain")
+            "dummy_input.txt", b"file_content", content_type="text/plain")
 
         self.submission = Submission.objects.create(
             participant_team=self.participant_team,
@@ -138,12 +139,13 @@ class BaseerAPITestClass(APITestCase):
 
         BASE_TEMP_DIR = tempfile.mkdtemp()
 
-        zipfile.ZipFile(join(self.BASE_TEMP_LOCATION,'test_zip.zip'), 'w', zipfile.ZIP_DEFLATED)
-        z.write(input_file)
-        z.close()
-        zipfile = SimpleUploadedFile(join(self.BASE_TEMP_LOCATION,'test_zip.zip'), z.read(), content_type='application/zip')
+        self.zipped = zipfile.ZipFile(join(self.BASE_TEMP_LOCATION,'test_zip.zip'), 'w', zipfile.ZIP_DEFLATED)
+        self.zipped.write(input_file)
+        self.zipped.close()
+        open(join(self.BASE_TEMP_LOCATION,'test_zip.zip'), rb)
+        self.z = SimpleUploadedFile(join(self.BASE_TEMP_LOCATION,'test_zip.zip'), self.zipped.read(), content_type='application/zip')
 
-        self.challenge.evaluation_script=zipfile
+        self.challenge.evaluation_script=self.z
 
 
     def tearDown(self):
@@ -157,6 +159,7 @@ class BaseerAPITestClass(APITestCase):
         os.remove(download_location)
 
     def test_download_and_extract_zip_file(self):
+        self.url = self.challenge.evaluation_script.url
         download_location = os.join(BASE_TEMP_DIR, "zip_download_location.zip")
         extract_location = os.join(BASE_TEMP_DIR, "zip_extract_location")
 
