@@ -43,8 +43,9 @@ from scripts.workers.submission_worker import (
     )
 
 from zipfile import ZipFile 
-
+import tempfile
 from moto import mock_sqs
+import boto3
 
 class BaseerAPITestClass(APITestCase):
 
@@ -99,7 +100,10 @@ class BaseerAPITestClass(APITestCase):
             enable_forum=True,
             anonymous_leaderboard=False)
 
-        os.makedirs('/tmp/evalai')
+        try:
+            os.makedirs("/tmp/evalai")
+        except OSError:
+            pass
 
         with self.settings(MEDIA_ROOT='/tmp/evalai'):
             self.challenge_phase = ChallengePhase.objects.create(
@@ -122,7 +126,7 @@ class BaseerAPITestClass(APITestCase):
         self.client.force_authenticate(user=self.user1)
 
         self.input_file = SimpleUploadedFile(
-            "dummy_input.txt", b"file_content", content_type="text/plain")
+            "test_file.txt", b"file_content", content_type="text/plain")
 
         self.submission = Submission.objects.create(
             participant_team=self.participant_team,
@@ -137,13 +141,17 @@ class BaseerAPITestClass(APITestCase):
             is_public=True,
         )
 
-        BASE_TEMP_DIR = tempfile.mkdtemp()
+        self.BASE_TEMP_DIR = tempfile.mkdtemp()
 
-        self.zipped = zipfile.ZipFile(join(self.BASE_TEMP_LOCATION,'test_zip.zip'), 'w', zipfile.ZIP_DEFLATED)
-        self.zipped.write(input_file)
+        f = open(join(self.BASE_TEMP_DIR, 'dummy_input.txt'), "x")
+        f = open(join(self.BASE_TEMP_DIR, 'dummy_input.txt'), "w")
+        f.write("file_content")
+
+        self.zipped = ZipFile(join(self.BASE_TEMP_DIR,'test_zip.zip'), 'w')
+        self.zipped.write(join(self.BASE_TEMP_DIR, 'dummy_input.txt'), 'dummy_input.txt')
         self.zipped.close()
-        open(join(self.BASE_TEMP_LOCATION,'test_zip.zip'), rb)
-        self.z = SimpleUploadedFile(join(self.BASE_TEMP_LOCATION,'test_zip.zip'), self.zipped.read(), content_type='application/zip')
+        file = open(join(self.BASE_TEMP_DIR,'test_zip.zip'), 'rb')
+        self.z = SimpleUploadedFile(join(self.BASE_TEMP_DIR,'test_zip.zip'), file.read(), content_type='application/zip')
 
         self.challenge.evaluation_script=self.z
 
@@ -152,16 +160,16 @@ class BaseerAPITestClass(APITestCase):
         shutil.rmtree('/tmp/evalai')
 
     def test_download_and_extract_file(self):
-        download_location = os.join(BASE_TEMP_DIR, "test_file.txt")
-        self.url = self.submission.input_file.url
+        download_location = join(self.BASE_TEMP_DIR, "test_file.txt")
+        self.url = return_file_url_per_environment(self.submission.input_file.url)
         download_and_extract_file(self.url, download_location)
         self.assertTrue(os.path.isfile(download_location))
         os.remove(download_location)
 
     def test_download_and_extract_zip_file(self):
-        self.url = self.challenge.evaluation_script.url
-        download_location = os.join(BASE_TEMP_DIR, "zip_download_location.zip")
-        extract_location = os.join(BASE_TEMP_DIR, "zip_extract_location")
+        self.url = return_file_url_per_environment(self.challenge.evaluation_script.url)
+        download_location = join(self.BASE_TEMP_DIR, "zip_download_location.zip")
+        extract_location = join(self.BASE_TEMP_DIR, "zip_extract_location")
 
         download_and_extract_zip_file(self.url, download_location, extract_location)
         self.assertTrue(os.path.isfile(download_location))
@@ -170,15 +178,15 @@ class BaseerAPITestClass(APITestCase):
         shutil.rmtree(extract_location)
 
     def test_create_dir(self):
-        directory = os.join(BASE_TEMP_DIR, "temp_dir")
+        directory = join(self.BASE_TEMP_DIR, "temp_dir")
         create_dir(directory)
         self.assertTrue(os.path.isdir(directory))
         shutil.rmtree(directory)
 
     def test_create_dir_as_python_package(self):
-        directory = os.join(BASE_TEMP_DIR, "temp_dir")
+        directory = join(self.BASE_TEMP_DIR, "temp_dir")
         create_dir_as_python_package(directory)
-        self.assertTrue(os.path.isfile(os.join(directory, "__init__.py")))
+        self.assertTrue(os.path.isfile(join(directory, "__init__.py")))
         shutil.rmtree(directory)
 
     def test_return_file_url_per_environment(self):
@@ -187,7 +195,7 @@ class BaseerAPITestClass(APITestCase):
         self.assertEqual(returned_url, "http://testserver/test/url")
 
     @mock_sqs()
-    def test_get_or_create_sqs_queue_for_existing_queue(self):
+    def test_get_or_create_sqs_queue_for_existing_queue(self): #testing it wrong
         client = boto3.client('sqs')
         client.create_queue(QueueName="test_queue")
         queue = get_or_create_sqs_queue("test_queue")
@@ -196,13 +204,9 @@ class BaseerAPITestClass(APITestCase):
         client.delete_queue(QueueUrl=queue_url)
 
     @mock_sqs()
-    def test_get_or_create_sqs_queue_for_non_existing_queue(self):
+    def test_get_or_create_sqs_queue_for_non_existing_queue(self): #Need to test for log messge.
         client = boto3.client('sqs')
         queue = get_or_create_sqs_queue("test_queue_2")
-        client.send_message(
-          QueueUrl=self.queue_url,
-          MessageBody=message
-        )
         queue_url = client.get_queue_url(QueueName='test_queue_2')['QueueUrl']
         self.assertTrue(queue_url)
         client.delete_queue(QueueUrl=queue_url)
