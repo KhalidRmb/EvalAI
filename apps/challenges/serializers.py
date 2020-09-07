@@ -9,6 +9,7 @@ from .models import (
     ChallengeEvaluationCluster,
     ChallengePhase,
     ChallengePhaseSplit,
+    ChallengeTemplate,
     DatasetSplit,
     Leaderboard,
     StarChallenge,
@@ -126,6 +127,23 @@ class ChallengePhaseSplitSerializer(serializers.ModelSerializer):
 
     def get_challenge_phase_name(self, obj):
         return obj.challenge_phase.name
+
+
+class ChallengeTemplateSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        super(ChallengeTemplateSerializer, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = ChallengeTemplate
+        fields = (
+            "id",
+            "title",
+            "image",
+            "dataset",
+            "eval_criteria",
+            "phases",
+            "splits",
+        )
 
 
 class ChallengeConfigSerializer(serializers.ModelSerializer):
